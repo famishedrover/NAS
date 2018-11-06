@@ -51,9 +51,6 @@ import numpy as np
 
 np.random.seed(2)
 
-
-
-
 Node.count = -1
 class NASGraph(torch.nn.Module,Graph) :
     def __init__(self,input,operationdist=[0.5,0.2,0.2,0.05,0.05]) :

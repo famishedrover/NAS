@@ -11,7 +11,7 @@ Expected Contributions :
 - [ ] Critique Morphism as in [1].
 - [ ] Exploring other methods that may alter image dimen.
 - [ ] Improve EER.
-- [ ] Exploring activation functions
+- [x] Exploring activation functions
 
 
 # Tasks :
@@ -26,6 +26,8 @@ Expected Contributions :
 - [ ] Merge with Conv 
 - [x] Implement Swish, AriA , AriA2, LeakyReLU, ReLU6 , Swish_Beta
 - [ ] Add Swish & Beta, AriA , etc as parameters to NASGraph
+- [x] Add Final Layers
+- [x] Run Training Loop 
 - [ ] Dynamic Final Linear Layers to accomodate changing convs
 - [x] Linear Widen for Dynamic Linear Layers
 - [ ] Find Contribution Source eg. Ref Papers/Implementations
