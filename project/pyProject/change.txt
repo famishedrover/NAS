@@ -1,0 +1,14 @@
+# 06/11/2018
+# Version 1.1
+Merge Layer addition <TODO : Testing>
+activations.py <- Swish, SwishBeta, AriA, AriA2 etc.
+Abstract Implementation of Hill Climbing, Train fns
+
+
+# Version 1.2
+Added Support for Node outputTensor
+Completed NASGraph Forward
+Added trainmodel.py -> support for Train, Test & DataLoaders
+Added Model(nn.Module) in main.py to bolster training
+Added nn.ModelDict to NASGraph
+Fixed bugs in NASGraph compatCheck , support for maxpool etc.
