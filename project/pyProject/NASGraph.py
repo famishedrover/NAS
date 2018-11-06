@@ -7,7 +7,7 @@
 #   addNode                     : private   - add a given node
 #   addInGraph                  : private   - called to add node in graph
 #   showAllNodes                : public    - helper @debugging
-#   createModel                 : public    - Create a complete nn.Module model -- NOT IMPLEMENTED -- #TODO
+#   createModel                 : public    - creates ModuleDict for addition of params to model
 #   forward                     : public    - Called by user for run
 #   f_forward                   : private   - helper to comaptCheck
 #   getoperation                : private   - helper to applymorph - selects operation
