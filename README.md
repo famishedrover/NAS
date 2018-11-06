@@ -1,7 +1,5 @@
 # Expanded Neural Architecture Search 
 
-This is a Bachelor's project on Neural Architecture Search undertaken by students of Delhi Technological University, India.
-
 We are following [1] as the baseline paper.
 
 Expected Contributions : 
@@ -19,7 +17,7 @@ Expected Contributions :
 - [x] Correct find 2 conv nodes to connect function.
 - [x] Add padding as fn params of Nodes (Conv etc.)
 - [x] Concept : Add support for adding Maxpool Node.
-- [ ] Modify compatCheck to get @forward fn.
+- [x] Modify compatCheck to get @forward fn.
 - [ ] Run Hill Climbing.
 - [ ] Testing of Merge Code 
 - [x] Write Merge 
