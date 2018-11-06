@@ -56,7 +56,7 @@ def Train(net,epochs=2):
 	        # forward + backward + optimize
 	        outputs = net(inputs)
 	        loss = criterion(outputs, labels)
-	        loss.backward()
+	        loss.backward(retain_graph=True)
 	        optimizer.step()
 
 	        # print statistics

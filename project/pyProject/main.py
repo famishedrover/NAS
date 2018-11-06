@@ -58,7 +58,7 @@ x = torch.randn((BATCH,gr.nodes[gr.begin].c.in_channels,32,32))
 # --------------------------------------------------------------
 # MORPHISM
 
-ITERATIONS = 10
+ITERATIONS = 27
 for _ in range(ITERATIONS):
 	print _ , ' :',
 	status = gr.applyMorph(log=False)
@@ -82,7 +82,7 @@ gr.compatCheck()
 gr.applyNecessaryAddNodes()
 # gr.compatCheck()
 # gr.showAllNodes()
-# gr.plotGraph()
+gr.plotGraph()
 
 
 # --------------------------------------------------------------

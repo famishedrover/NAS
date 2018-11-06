@@ -144,7 +144,7 @@ class NASGraph(torch.nn.Module,Graph) :
                 
         if nextnodes is not None :
             for nnodes in nextnodes :
-                assert type(nnodes)==type(1) , 'Check input Type addInGraph'
+                assert type(nnodes)==type('1') , 'Check input Type addInGraph'
                 self.nodes[n].addChild(nnodes)
                 self.nodes[nnodes].addParent(n)
         if log :
@@ -388,7 +388,8 @@ class NASGraph(torch.nn.Module,Graph) :
                 
             
             boolPad = False 
-            if random.random() > 0.5 :
+            # PADDING_THRESH = 0.5
+            if random.random() > 0.2 :
                 boolPad = True
                 if log :
                     print 'PAD APPLIED'
