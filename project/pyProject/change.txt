@@ -12,3 +12,7 @@ Added trainmodel.py -> support for Train, Test & DataLoaders
 Added Model(nn.Module) in main.py to bolster training
 Added nn.ModelDict to NASGraph
 Fixed bugs in NASGraph compatCheck , support for maxpool etc.
+
+# Version 1.3 
+Cuda Support for NAS Nodes
+Updated Train / Test fns

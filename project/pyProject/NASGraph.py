@@ -34,7 +34,7 @@
 #   self.samplex                : tensor    - sample input tensor for compatCheck
 # 
 # 
-# Version : 1.2
+# Version : 1.3
 # 
 # Changehistory : (from Nov 5th 2018)  ./change.txt
 # 
