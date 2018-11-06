@@ -3,13 +3,6 @@ Self.ipynb
 *.gv
 *.pyc
 /project/pyProject_BACKUP1/
-/project/pyProject/data/cifar-10-batches-py/batches.meta
-/project/pyProject/data/cifar-10-batches-py/data_batch_1
-/project/pyProject/data/cifar-10-batches-py/data_batch_2
-/project/pyProject/data/cifar-10-batches-py/data_batch_3
-/project/pyProject/data/cifar-10-batches-py/data_batch_4
-/project/pyProject/data/cifar-10-batches-py/data_batch_5
-/project/pyProject/data/cifar-10-batches-py/readme.html
-/project/pyProject/data/cifar-10-batches-py/test_batch
+/project/pyProject/data/
 /data/
 /papers/
