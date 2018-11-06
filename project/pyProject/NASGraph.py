@@ -63,8 +63,8 @@ class NASGraph(torch.nn.Module,Graph) :
 #         name2type has been replaced by type attribute of Node
 #         begin changing code to incorporate node.type instead of self.name2type
         
-        self.nodes = {}
-        self.nodesStr = {}
+        self.nodes = {}   # use this only as nn.ModuleDict()
+        # self.nodesStr = {}
         self.nodesByType = {'conv':[],
                            'maxpool':[],
                            'add':[],
@@ -138,7 +138,7 @@ class NASGraph(torch.nn.Module,Graph) :
         
         if prevnodes is not None :
             for pnodes in prevnodes :
-                assert type(pnodes)==type(1) , 'Check input Type addInGraph'
+                assert type(pnodes)==type('1') , 'Check input Type addInGraph'
                 self.nodes[pnodes].addChild(n)
                 self.nodes[n].addParent(pnodes)
                 
@@ -184,8 +184,10 @@ class NASGraph(torch.nn.Module,Graph) :
     
     def createModel(self):
 
-        self.nodesStr = {self.nodes[k].type + str(self.nodes[k].name):v for k,v in self.nodes.iteritems()}
-        self.nodesStr = torch.nn.ModuleDict(self.nodesStr)
+        # self.nodesStr = {self.nodes[k].type + str(self.nodes[k].name):v for k,v in self.nodes.iteritems()}
+        # self.nodesStr = torch.nn.ModuleDict(self.nodesStr)
+
+        self.nodes = torch.nn.ModuleDict(self.nodes)
         
     # def forward(self,x) :
     #      return self.f_forward(x)

@@ -94,9 +94,12 @@ t = gr(x)
 print 'OUTPUT:',t.shape
 
 
+
+
 # --------------------------------------------------------------
 # PARAMS OF MODEL
 print '-'*20
+
 gr.createModel()
 
 # print 'NASGRAPH PARAMS'
@@ -137,12 +140,15 @@ if torch.cuda.is_available() :
 	net = net.cuda()
 
 
+
+# print id(net.nasgr.nodes[net.nasgr.begin]) ,' : ', id(net.nasgr.nodesStr[net.nasgr.nodes[net.nasgr.begin].type + str(net.nasgr.nodes[net.nasgr.begin].name)])
+
 # --------------------------------------------------------------
 # TRAINING FOR 2 EPOCHS 
 
 
 from trainmodel import Train ,Test
-Train(net,2)
+Train(net,1)
 Test(net)
 
 

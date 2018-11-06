@@ -60,7 +60,7 @@ class Node:
         Node.count += 1
         self.name = str(Node.count)
         self.type = type
-        self.id = id(self)
+        self.id = str(id(self))
         self.child = []  
         self.parent = []
         self.output = None

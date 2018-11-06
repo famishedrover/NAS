@@ -44,10 +44,12 @@ def Train(net,epochs=2):
 
 	    running_loss = 0.0
 	    for i, data in enumerate(trainloader, 0):
-	    	print len(trainloader)
+	    	# print len(trainloader)
 
 	        # get the inputs
 	        inputs, labels = data
+	        if torch.cuda.is_available() :
+	        	inputs, labels = inputs.cuda() , labels.cuda()
 	        # zero the parameter gradients
 	        optimizer.zero_grad()
 
@@ -72,6 +74,9 @@ def Test(net) :
 	with torch.no_grad():
 	    for data in testloader:
 	        images, labels = data
+
+	        if torch.cuda.is_available() :
+	        	images, labels = images.cuda() , labels.cuda()
 	        outputs = net(images)
 	        _, predicted = torch.max(outputs, 1)
 	        c = (predicted == labels).squeeze()
