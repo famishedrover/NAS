@@ -152,7 +152,7 @@ class Graph :
         else :
             return stack
         
-    def plotGraph(self,filename='unix.gv') :
+    def plotGraph(self,plot=True,filename='unix.gv') :
         u = Digraph('unix', filename=filename)
         cmap = {'conv':'red','add':'blue','merge':'green','maxpool':'yellow'}
         
@@ -166,5 +166,6 @@ class Graph :
                 nb = self.name2type[self.nodes[ch].name]+self.nodes[ch].name
                 u.edge(na,nb)
         
-        u.view()
+        if plot :
+            u.view()
 

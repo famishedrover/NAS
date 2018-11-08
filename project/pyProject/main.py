@@ -46,13 +46,20 @@ import random
 # RANDOM SEED FOR random pkg, 
 # TODO Add for torch and numpy 
 random.seed('Na')
+
+
 BATCH = 4
+BEGIN_IN_CHANNELS = 3 
+BEGIN_OUT_CHANNELS = 16
+BEGIN_KERNEL_SIZE = 3
+BEGIN_PADDING = False
+BEGIN_BLOCK = 'conv'
+operationdist = [0.3,0.2,0.2,0.15,0.15]
 # --------------------------------------------------------------
 # INIT GRAPH
-operationdist = [0.3,0.2,0.2,0.15,0.15]
 # (4, 3, 32, 32)
 gr = NASGraph(([BATCH,3, 32, 32]),operationdist)
-p = {'block':'conv','in_channels':3,'out_channels':16,'kernel_size':3,'padding':False}
+p = {'block':BEGIN_BLOCK,'in_channels':BEGIN_IN_CHANNELS,'out_channels':BEGIN_OUT_CHANNELS,'kernel_size':BEGIN_KERNEL_SIZE,'padding':BEGIN_PADDING}
 gr.addInGraph(**p)
 x = torch.randn((BATCH,gr.nodes[gr.begin].c.in_channels,32,32))
 # --------------------------------------------------------------

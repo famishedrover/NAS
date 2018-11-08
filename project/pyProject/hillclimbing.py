@@ -1,70 +1,100 @@
-# |--------------------------------------------------------------|
-# |                                                              |
-# |          ABSTRACT LEVEL IMPLEMENTATION	Ver : 1.1 	         |
-# |                                                              |
-#  ---------------------------------------------------------------
+import torch.nn as nn
+import torch
+import numpy as np
+import matplotlib.pyplot as plt 
+from torchsummary import summary
+import torchviz
+import networkx as nx
+import matplotlib.pyplot as plt
+from graphviz import Digraph
+import math
+from NASGraph import NASGraph
+import random
+# transform = transforms.Compose(
+#     [transforms.ToTensor(),
+#      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+# trainset = torchvision.datasets.CIFAR10(root='./data', train=True,download=True, transform=transform)
+# trainloader = torch.utils.data.DataLoader(trainset, batch_size=4, shuffle=True, num_workers=2)
+# testset = torchvision.datasets.CIFAR10(root='./data', train=False,download=True, transform=transform)
+# testloader = torch.utils.data.DataLoader(testset, batch_size=4,shuffle=False, num_workers=2)
+# classes = ('plane', 'car', 'bird', 'cat','deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
+# GET DATA AND TRAINING CODE AS IMPORTA FROM TRAINMODE.PY
+
+from trainmodel import Train,Test,ValidationPerformance,argMax,trainloader,testloader, addLinearLayers
 
 
-# GET TRAIN FN from trainmodel.py
-# def Train(optim, model, epochs, lr_start, lr_end):
-# 	criterion = torch.nn.MSELoss(reduction='sum')
-
-# 	# use lr_start, lr_end for annealing 
-# 	# use SGDR instead of SGD : experiment with other optims
-# 	optimizer = torch.optim.SGD(model.parameters(), lr=1e-4, momentum=0.9)
-
-# 	# crate a pytroch test/trainloader and load in batches...
-# 	# CIFAR10
-
-# 	# y = from batch
-# 	y = None
-# 	for t in range(epochs):
-# 	    y_pred = model(x)
-# 	    loss = criterion(y_pred, y)
-# 	    optimizer.zero_grad()
-# 	    loss.backward()
-# 	    optimizer.step()
-
-def argMax(listOfPerformance):
-	pass
-
-def ValidationPeformance(model) :
-	# @returns validation accuracy
-	pass
 
 # some start model_0
-model_0 = 0
-n_steps = 10
-n_neigh = 4
-n_nm = 3
-epoch_neigh = 30
-epoch_final = 50
-lr_start = 0.01
-lr_end = 0.001  # annealed via SGDR
+#BATCH = 4
+# INIT GRAPH
+#operationdist = [0.3,0.2,0.2,0.15,0.15]
+# (4, 3, 32, 32)
+#model_0 = NASGraph(([BATCH,3, 32, 32]),operationdist)
+#n_steps = 10
+#n_neigh = 4
+#n_nm = 3
+#epoch_neigh = 30
+#epoch_final = 50
+#lr_start = 0.01
+#lr_end = 0.001  # annealed via SGDR
 
-model_best = model_0
+# assuming the input model is NASGraph object, 
+# we need to add linear layers at the end 
+# TODO : create a checkpt version of code to read back trained weights
+# upon crash 
 
+SGDR = 'SGDR'
+
+def NASH(model_0,n_steps,n_neigh,n_nm,epoch_neigh,epoch_final,lr_start,lr_end):
+
+	# model_0 is NASGraph object, "treated" already with createModel command 
+	model_best = model_0
 
 # hill climbing
+	for i in range(n_steps) :   
+		curr_generator_model = model_best 
+		model=[]
 
-for i in range(n_steps) :
-    
-    #NEIGHBOURS ---------------------
-    
-    # get n_neigh neighbours of model_best
-    for j in range(n_neigh-1) :
-        model_j = applyMorph(model_best,n_nm)
-        
-        #train this model_j for a few epochs.
-        model_j = Train(SGDR,model_j,epoch_neigh,lr_start,lr_end)
+    	for j in range(n_neigh-1) :
+    		for k in range(n_nm):
+        		model_best.applyMorph()     	
+
+        	model_best.applyNecessaryAddNodes()
+        	model_best_final = addLinearLayers(model_best)
+        	Train(SGDR,model_best_final,epoch_neigh,lr_start,lr_end)
+        	model.append(model_best_final)
+
+        	model_best = curr_generator_model
      
-    # paper says  : "last model obtained is infact the best model therefore via hillclimbing we choose this."
-    model_n_neigh = Train(SGDR,model_best,epoch_neigh,lr_start,lr_end)
-    
-    #best model on validation set.
-    
-    #SELECT MAX ---------------------
-    model_best = argMax([ValidationPerformance(model_j) for model_j in models_1__n_neigh])
-    
-    #train final model.
-    model_best = Train(SGDR,model_best,epoch_neigh,lr_start,lr_end)
+    	# paper says  : "last model obtained is infact the best model therefore via hillclimbing we choose this."
+    	model_best.applyNecessaryAddNodes()
+    	model_best_final = addLinearLayers(model_best)
+    	Train(SGDR,model_best_final,epoch_neigh,lr_start,lr_end)
+
+    	model_best = removeLinearLayers(model_best_final)
+
+    	model.append(model_best_final)    
+    	#best model on validation set. 
+    	#SELECT MAX ---------------------
+    	model_best = model[argMax([ValidationPerformance(model_j) for model_j in model])]
+    	model_best = removeLinearLayers(model_best)
+    	print 'Plotting Best Graph Seen So Far'
+    	model_best.plotGraph()
+
+	model_best.applyNecessaryAddNodes()
+   	model_best = addLinearLayers(model_best)
+	model_best_final = Train(SGDR,model_best_final,epoch_neigh,lr_start,lr_end)
+
+	return model_best
+
+
+
+# ------------------------------------------------------------------------------------------------
+# MAIN CODE FOR HILL CLIMBING
+# run.py
+
+
+
+
