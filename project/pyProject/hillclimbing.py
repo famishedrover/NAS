@@ -58,18 +58,18 @@ def NASH(model_0,n_steps,n_neigh,n_nm,epoch_neigh,epoch_final,lr_start,lr_end):
 		curr_generator_model = model_best 
 		allModels=[]
 
-    	for j in range(n_neigh-1) :
-    		print 'J Neighs :',j
-    		for k in range(n_nm):
-        		model_best.nasgr.applyMorph()     	
+		for j in range(n_neigh-1) :
+			print 'J Neighs :',j
+			for k in range(n_nm):
+				model_best.nasgr.applyMorph()     	
 
-        	model_best.nasgr.applyNecessaryAddNodes()
-        	# model_best.modifyLinear() 
-        	Train(SGDR,model_best,epoch_neigh,lr_start,lr_end)
-        	allModels.append(model_best)
+			model_best.nasgr.applyNecessaryAddNodes()
+			# model_best.modifyLinear() 
+			Train(SGDR,model_best,epoch_neigh,lr_start,lr_end)
+			allModels.append(model_best)
 
-        	print 'TRAINED!',j
-        	model_best = curr_generator_model
+			print 'TRAINED!',j
+			model_best = curr_generator_model
         print 'Done J loop'
     	# paper says  : "last model obtained is infact the best model therefore via hillclimbing we choose this."
     	model_best.nasgr.applyNecessaryAddNodes()
