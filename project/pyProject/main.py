@@ -62,6 +62,7 @@ gr = NASGraph(([BATCH,3, 32, 32]),operationdist)
 p = {'block':BEGIN_BLOCK,'in_channels':BEGIN_IN_CHANNELS,'out_channels':BEGIN_OUT_CHANNELS,'kernel_size':BEGIN_KERNEL_SIZE,'padding':BEGIN_PADDING}
 gr.addInGraph(**p)
 
+
 for _ in range(10):
     gr.applyMorph()
 x = torch.randn((BATCH,gr.nodes[gr.begin].c.in_channels,32,32))

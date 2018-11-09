@@ -197,6 +197,10 @@ class NASGraph(torch.nn.Module,Graph) :
     def forward(self,x) :
         # give x to the first one as 
 
+
+        # print self.nodes
+        # print self.order 
+        
         self.nodes[self.order[0]](x)
 
         # do top traversal 

@@ -86,6 +86,8 @@ def Test(net) :
 
 
 def Train(optim, net, epochs, lr_start, lr_end):
+
+
 	criterion = nn.CrossEntropyLoss()
 	optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
@@ -135,7 +137,7 @@ def argMax(listOfPerformance):
 
 
 def ValidationPerformance(model) :
-	print 
+
 	class_correct = list(0. for i in range(10))
 	class_total = list(0. for i in range(10))
 	with torch.no_grad():
@@ -148,9 +150,12 @@ def ValidationPerformance(model) :
 	            label = labels[i]
 	            class_correct[label] += c[i].item()
 	            class_total[label] += 1
-	sum_val=0;            
+	        break
+	
+	sum_val=0    
+	epsilon_Thresh = 0.0001       
 	for i in range(10):
-		sum_val=sum_val+((100*(class_correct[i]/class_total[i]))*(100*(class_correct[i]/class_total[i])))
+		sum_val=sum_val+((100*(class_correct[i]/(class_total[i]+epsilon_Thresh)))*(100*(class_correct[i]/(class_total[i]+epsilon_Thresh))))
 	sum_val=sum_val/10
 	return sum_val	
 
@@ -168,7 +173,7 @@ class NASModule(nn.Module) :
         
         fc1 = nn.Linear(input,32)
         fc2 = nn.Linear(32,16)
-        fc3 = nn.Linear(64,output)
+        fc3 = nn.Linear(16,output)
 
         self.layers = [fc1,fc2,fc3]
         
@@ -179,36 +184,69 @@ class NASModule(nn.Module) :
         return out
     
     
+    # def modify_linear(self,no_of_neurons,layer=0):
+    #     # No. of neurons is the actual neurons to be kept 
+    #     # for img output (b,c,x,y) from conv 
+    #     # no_of_neurons = c*x*y
+
+    #     current_layer = self.layers[layer]
+    #     next_layer = self.layers[layer+1]
+   
+    #     I = current_layer.weight.shape[1]
+    #     H = current_layer.weight.shape[0]
+    #     O = next_layer.weight.shape[0]
+
+
+    #     weights = [current_layer.weight.data, next_layer.weight.data]
+
+    #     current_layer = torch.nn.Linear(I,no_of_neurons)
+    #     next_layer = torch.nn.Linear(no_of_neurons,O)
+
+    #     if no_of_neurons <= H :
+    #     	current_layer.weight.data[0:no_of_neurons,:] = weights[0]
+    #     	next_layer.weight.data[:,0:no_of_neurons] = weights[1]
+    #     else :
+    #     	current_layer.weight.data[0:H,:] = weights[0]
+    #     	next_layer.weight.data[:,0:H] = weights[1]
+
+    #     self.layers[layer] = current_layer
+    #     self.layers[layer+1] = next_layer
+        
+    #     self.nns = nn.Sequential(*self.layers)   
+
     def modify_linear(self,no_of_neurons,layer=0):
         # No. of neurons is the actual neurons to be kept 
         # for img output (b,c,x,y) from conv 
         # no_of_neurons = c*x*y
 
-        current_layer = self.layers[layer]
-        next_layer = self.layers[layer+1]
+        # current_layer = self.layers[layer]
+        next_layer = self.layers[layer]
    
-        I = current_layer.weight.shape[1]
-        H = current_layer.weight.shape[0]
+        # I = current_layer.weight.shape[1]
+        # H = current_layer.weight.shape[0]
         O = next_layer.weight.shape[0]
 
+        print next_layer.weight.shape
+        H = next_layer.weight.shape[1]
 
-        weights = [current_layer.weight.data, next_layer.weight.data]
 
-        current_layer = torch.nn.Linear(I,no_of_neurons)
+        weights = [0,next_layer.weight.data]
+
         next_layer = torch.nn.Linear(no_of_neurons,O)
 
         if no_of_neurons <= H :
-        	current_layer.weight.data[0:no_of_neurons,:] = weights[0]
-        	next_layer.weight.data[:,0:no_of_neurons] = weights[1]
+        	# print 'DOWN'
+        	next_layer.weight.data[:,:] = weights[1][:,:no_of_neurons]
+      
         else :
-        	current_layer.weight.data[0:H,:] = weights[0]
+        	# print 'UP'
         	next_layer.weight.data[:,0:H] = weights[1]
+        	
 
-        self.layers[layer] = current_layer
-        self.layers[layer+1] = next_layer
+
+        self.layers[layer] = next_layer
         
-        self.nns = nn.Sequential(*self.layers)   
-
+        self.nns = nn.Sequential(*self.layers) 
 
 
 
@@ -234,21 +272,39 @@ class Model(nn.Module) :
         super(Model,self).__init__()
         self.nasgr = nasgr
 
-		t = gr(torch.randn((BATCH,BEGIN_IN_CHANNELS,32,32))).shape
-		out = t[1]*t[2]*t[3]
+        print type(nasgr)
+        print nasgr
 
-		self.fcs = NASModule(out)
+        t = nasgr(torch.randn((BATCH,BEGIN_IN_CHANNELS,32,32))).shape
+        out = t[1]*t[2]*t[3]
+        # print 'OUT IN MODEL INIT :',out
 
-		self.batch_size = t[0]
+        self.prevOut = out
+
+        self.fcs = NASModule(out)
+        self.batch_size = t[0]
 
 
     def forward(self,x) :
     	out = self.nasgr(x)
+
+    	k = out.shape 
+    	k = k[1]*k[2]*k[3]
+    	if k!= self.prevOut :
+    		# print 'COMPARE :',out.shape, self.prevOut
+    		self.prevOut = self.modifyLinear()
+
     	out = out.view(self.batch_size,-1)
 
     	out = self.fcs(out)
     	return out
 
+    def modifyLinear(self) :
+    	t = self.nasgr(torch.randn((BATCH,BEGIN_IN_CHANNELS,32,32))).shape
+    	out = t[1]*t[2]*t[3]
+    	# print 'OUT IN MODIFYLINEAR',out
+    	self.fcs.modify_linear(out)
+    	return out
 
 
 
@@ -276,7 +332,13 @@ def removeLinearLayers(net):
 
 
 
-
+if __name__ == '__main__' :
+	f = NASModule(100)
+	print f
+	f.modify_linear(50)
+	print f
+	f.modify_linear(200)
+	print f
 
 
 

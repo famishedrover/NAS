@@ -56,44 +56,90 @@ def NASH(model_0,n_steps,n_neigh,n_nm,epoch_neigh,epoch_final,lr_start,lr_end):
 	for i in range(n_steps) :  
 		print 'STEP ',i,'-'*20
 		curr_generator_model = model_best 
-		model=[]
+		allModels=[]
 
     	for j in range(n_neigh-1) :
     		print 'J Neighs :',j
     		for k in range(n_nm):
-        		model_best.applyMorph()     	
+        		model_best.nasgr.applyMorph()     	
 
-        	model_best.applyNecessaryAddNodes()
-        	model_best_final = addLinearLayers(model_best)
-        	Train(SGDR,model_best_final,epoch_neigh,lr_start,lr_end)
-        	model.append(model_best_final)
+        	model_best.nasgr.applyNecessaryAddNodes()
+        	# model_best.modifyLinear() 
+        	Train(SGDR,model_best,epoch_neigh,lr_start,lr_end)
+        	allModels.append(model_best)
 
         	print 'TRAINED!',j
         	model_best = curr_generator_model
         print 'Done J loop'
     	# paper says  : "last model obtained is infact the best model therefore via hillclimbing we choose this."
-    	model_best.applyNecessaryAddNodes()
-    	model_best_final = addLinearLayers(model_best)
-    	print(model_best_final)
-    	print model_best.nodes[model_best.order[-1]].output
-    	Train(SGDR,model_best_final,epoch_neigh,lr_start,lr_end)
+    	model_best.nasgr.applyNecessaryAddNodes()
+    	# model_best.modifyLinear()
 
-    	model.append(model_best_final)   
-    	model_best = removeLinearLayers(model_best_final)
+    	Train(SGDR,model_best,epoch_neigh,lr_start,lr_end)
+
+    	allModels.append(model_best)   
     	#best model on validation set. 
     	#SELECT MAX ---------------------
 
-    	model_best = model[argMax([ValidationPerformance(model_j) for model_j in model])]
-    	model_best = removeLinearLayers(model_best)
-    	print 'Plotting Best Graph Seen So Far'
-    	# model_best.plotGraph()
+    	model_best = allModels[argMax([ValidationPerformance(model_j) for model_j in allModels])]
 
 
-	model_best.applyNecessaryAddNodes()
-   	model_best = addLinearLayers(model_best)
-	model_best_final = Train(SGDR,model_best_final,epoch_final,lr_start,lr_end)
+	model_best.nasgr.applyNecessaryAddNodes()
+	# model_best.modifyLinear()
+
+	Train(SGDR,model_best,epoch_final,lr_start,lr_end)
 
 	return model_best
+
+
+
+# def NASH(model_0,n_steps,n_neigh,n_nm,epoch_neigh,epoch_final,lr_start,lr_end):
+
+# 	# model_0 is NASGraph object, "treated" already with createModel command 
+# 	model_best = model_0
+
+# # hill climbing
+# 	for i in range(n_steps) :  
+# 		print 'STEP ',i,'-'*20
+# 		curr_generator_model = model_best 
+# 		model=[]
+
+#     	for j in range(n_neigh-1) :
+#     		print 'J Neighs :',j
+#     		for k in range(n_nm):
+#         		model_best.applyMorph()     	
+
+#         	model_best.applyNecessaryAddNodes()
+#         	model_best_final = addLinearLayers(model_best)
+#         	Train(SGDR,model_best_final,epoch_neigh,lr_start,lr_end)
+#         	model.append(model_best_final)
+
+#         	print 'TRAINED!',j
+#         	model_best = curr_generator_model
+#         print 'Done J loop'
+#     	# paper says  : "last model obtained is infact the best model therefore via hillclimbing we choose this."
+#     	model_best.applyNecessaryAddNodes()
+#     	model_best_final = addLinearLayers(model_best)
+#     	print(model_best_final)
+#     	print model_best.nodes[model_best.order[-1]].output
+#     	Train(SGDR,model_best_final,epoch_neigh,lr_start,lr_end)
+
+#     	model.append(model_best_final)   
+#     	model_best = removeLinearLayers(model_best_final)
+#     	#best model on validation set. 
+#     	#SELECT MAX ---------------------
+
+#     	model_best = model[argMax([ValidationPerformance(model_j) for model_j in model])]
+#     	model_best = removeLinearLayers(model_best)
+#     	print 'Plotting Best Graph Seen So Far'
+#     	# model_best.plotGraph()
+
+
+# 	model_best.applyNecessaryAddNodes()
+#    	model_best = addLinearLayers(model_best)
+# 	model_best_final = Train(SGDR,model_best_final,epoch_final,lr_start,lr_end)
+
+# 	return model_best
 
 
 

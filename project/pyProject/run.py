@@ -3,7 +3,7 @@
 
 from hillclimbing import NASH
 from NASGraph import NASGraph
-
+from trainmodel import Model 
 # ------------------------------------------------------------------------------------
 
 
@@ -39,21 +39,45 @@ lr_end = 0.001  # annealed via SGDR
 # --------------------------------------------------------------
 # INIT GRAPH
 
+# gr = NASGraph(([BATCH,BEGIN_IN_CHANNELS, IMAGE_X, IMAGE_Y]),operationdist)
+# p = {'block':BEGIN_BLOCK,'in_channels':BEGIN_IN_CHANNELS,'out_channels':BEGIN_OUT_CHANNELS,'kernel_size':BEGIN_KERNEL_SIZE,'padding':BEGIN_PADDING}
+# gr.addInGraph(**p)
+
+# print gr
+
+# gr.createModel()
+
+
 gr = NASGraph(([BATCH,BEGIN_IN_CHANNELS, IMAGE_X, IMAGE_Y]),operationdist)
 p = {'block':BEGIN_BLOCK,'in_channels':BEGIN_IN_CHANNELS,'out_channels':BEGIN_OUT_CHANNELS,'kernel_size':BEGIN_KERNEL_SIZE,'padding':BEGIN_PADDING}
 gr.addInGraph(**p)
-
-print gr
-
+for _ in range(5):
+    gr.applyMorph()
+gr.order = gr.topologicalSort()
 gr.createModel()
+
+
+runModel = Model(gr)
+
+# pass this runModel to NASH
+
 # --------------------------------------------------------------
 # RUN HILL CLIMBING / OTHER OPTIM 
 
-final_trained = NASH(model_0=gr,
+final_trained = NASH(model_0=runModel,
 					n_steps=n_steps,n_neigh=n_neigh,
 					n_nm=n_nm,epoch_neigh=epoch_neigh,
 					epoch_final=epoch_final,
 					lr_start=lr_start,lr_end=lr_end)
+
+
+
+
+# final_trained = NASH(model_0=gr,
+# 					n_steps=n_steps,n_neigh=n_neigh,
+# 					n_nm=n_nm,epoch_neigh=epoch_neigh,
+# 					epoch_final=epoch_final,
+# 					lr_start=lr_start,lr_end=lr_end)
 
 
 
