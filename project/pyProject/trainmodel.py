@@ -31,6 +31,9 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=4,
 classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
+
+print trainloader
+
 def Test(net) :
 	class_correct = list(0. for i in range(10))
 	class_total = list(0. for i in range(10))
@@ -111,10 +114,15 @@ def Train(optim, net, epochs, lr_start, lr_end):
 	        running_loss += loss.item()
 
 	        viewerval = 100
+
+	        print 'Done [{}|{}]'.format(i,running_loss)
+	        break
+
 	        if i % viewerval == viewerval-1:    # print every 2000 mini-batches
 	            print('[%d, %5d] loss: %.3f' %(epoch + 1, i + 1, running_loss / viewerval))
 	            running_loss = 0.0
-	            break
+
+	print 'DONE TRAIN'
 
 def argMax(listOfPerformance):
 	max_index=0
@@ -127,6 +135,7 @@ def argMax(listOfPerformance):
 
 
 def ValidationPerformance(model) :
+	print 
 	class_correct = list(0. for i in range(10))
 	class_total = list(0. for i in range(10))
 	with torch.no_grad():
@@ -147,21 +156,102 @@ def ValidationPerformance(model) :
 
 
 
+
+# LINEAR HANDLER ------------------------------------------------------
+
+class NASModule(nn.Module) :
+    def __init__(self, input, output=10):
+        super(NASModule, self).__init__()
+        
+        self.input = input
+        self.output = output
+        
+        fc1 = nn.Linear(input,32)
+        fc2 = nn.Linear(32,16)
+        fc3 = nn.Linear(64,output)
+
+        self.layers = [fc1,fc2,fc3]
+        
+        self.nns = nn.Sequential(*self.layers)
+
+    def forward(self,x) :
+        out = self.nns(x)
+        return out
+    
+    
+    def modify_linear(self,no_of_neurons,layer=0):
+        # No. of neurons is the actual neurons to be kept 
+        # for img output (b,c,x,y) from conv 
+        # no_of_neurons = c*x*y
+
+        current_layer = self.layers[layer]
+        next_layer = self.layers[layer+1]
+   
+        I = current_layer.weight.shape[1]
+        H = current_layer.weight.shape[0]
+        O = next_layer.weight.shape[0]
+
+
+        weights = [current_layer.weight.data, next_layer.weight.data]
+
+        current_layer = torch.nn.Linear(I,no_of_neurons)
+        next_layer = torch.nn.Linear(no_of_neurons,O)
+
+        if no_of_neurons <= H :
+        	current_layer.weight.data[0:no_of_neurons,:] = weights[0]
+        	next_layer.weight.data[:,0:no_of_neurons] = weights[1]
+        else :
+        	current_layer.weight.data[0:H,:] = weights[0]
+        	next_layer.weight.data[:,0:H] = weights[1]
+
+        self.layers[layer] = current_layer
+        self.layers[layer+1] = next_layer
+        
+        self.nns = nn.Sequential(*self.layers)   
+
+
+
+
+# class Model(nn.Module) :
+#     def __init__(self,nasgr,nasout) :
+#         super(Model,self).__init__()
+#         self.nasgr = nasgr
+#         out = nasout[1]*nasout[2]*nasout[3]
+#         self.fc1 = nn.Linear(out,16)
+#         self.fc2 = nn.Linear(16,10)
+#     	self.batch_size = nasout[0]
+#     def forward(self,x) :
+#     	out = self.nasgr(x)
+#     	out = out.view(self.batch_size,-1)
+#     	out = self.fc1(out)
+#     	out = self.fc2(out)
+
+#     	return out
+
+
 class Model(nn.Module) :
-    def __init__(self,nasgr,nasout) :
+    def __init__(self,nasgr) :
         super(Model,self).__init__()
         self.nasgr = nasgr
-        out = nasout[1]*nasout[2]*nasout[3]
-        self.fc1 = nn.Linear(out,16)
-        self.fc2 = nn.Linear(16,10)
-    	self.batch_size = nasout[0]
+
+		t = gr(torch.randn((BATCH,BEGIN_IN_CHANNELS,32,32))).shape
+		out = t[1]*t[2]*t[3]
+
+		self.fcs = NASModule(out)
+
+		self.batch_size = t[0]
+
+
     def forward(self,x) :
     	out = self.nasgr(x)
     	out = out.view(self.batch_size,-1)
-    	out = self.fc1(out)
-    	out = self.fc2(out)
 
+    	out = self.fcs(out)
     	return out
+
+
+
+
 
 # constants --------------------------------------------------------------------------------
 
@@ -181,6 +271,12 @@ def addLinearLayers(gr):
 
 def removeLinearLayers(net):
 	return net.nasgr
+
+
+
+
+
+
 
 
 
