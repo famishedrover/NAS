@@ -67,7 +67,7 @@ def NASH(model_0,n_steps,n_neigh,n_nm,epoch_neigh,epoch_final,lr_start,lr_end):
         	model.append(model_best_final)
 
         	model_best = curr_generator_model
-     
+
     	# paper says  : "last model obtained is infact the best model therefore via hillclimbing we choose this."
     	model_best.applyNecessaryAddNodes()
     	model_best_final = addLinearLayers(model_best)
@@ -85,7 +85,7 @@ def NASH(model_0,n_steps,n_neigh,n_nm,epoch_neigh,epoch_final,lr_start,lr_end):
 
 	model_best.applyNecessaryAddNodes()
    	model_best = addLinearLayers(model_best)
-	model_best_final = Train(SGDR,model_best_final,epoch_neigh,lr_start,lr_end)
+	model_best_final = Train(SGDR,model_best_final,epoch_final,lr_start,lr_end)
 
 	return model_best
 
