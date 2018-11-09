@@ -51,9 +51,12 @@ lr_end = 0.001  # annealed via SGDR
 gr = NASGraph(([BATCH,BEGIN_IN_CHANNELS, IMAGE_X, IMAGE_Y]),operationdist)
 p = {'block':BEGIN_BLOCK,'in_channels':BEGIN_IN_CHANNELS,'out_channels':BEGIN_OUT_CHANNELS,'kernel_size':BEGIN_KERNEL_SIZE,'padding':BEGIN_PADDING}
 gr.addInGraph(**p)
+gr.order = gr.topologicalSort()
+
+
 for _ in range(5):
     gr.applyMorph()
-gr.order = gr.topologicalSort()
+
 gr.createModel()
 
 

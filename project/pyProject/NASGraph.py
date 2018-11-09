@@ -200,7 +200,7 @@ class NASGraph(torch.nn.Module,Graph) :
 
         # print self.nodes
         # print self.order 
-        
+
         self.nodes[self.order[0]](x)
 
         # do top traversal 
@@ -371,10 +371,19 @@ class NASGraph(torch.nn.Module,Graph) :
     
     def applyMorph(self,log=False) :
         #update output shapes for all nodes.
+        print 'OUTPUT OF NASGRAPH', self.nodes[self.order[-1]].output
+
+
+
         self.order = self.topologicalSort()
         self.compatCheck()
         
         op = self.getoperation()
+
+        sampleout = self.nodes[self.order[-1]].output
+        if (op == 'conv' or op == 'maxpool') and (sampleout[2] < 6 or sampleout[3] < 6) :
+            print 'KERNEL SIZE > REQ UNABLE TO PERFORM OP'
+            return False 
         #op = 'conv'
         # if log :
 
