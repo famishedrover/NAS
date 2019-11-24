@@ -53,7 +53,7 @@ np.random.seed(2)
 
 Node.count = -1
 class NASGraph(torch.nn.Module,Graph) :
-    def __init__(self,input,operationdist=[0.5,0.2,0.2,0.05,0.05]) :
+    def __init__(self,input,operationdist=[0.5,0.2,0.2,0.1]) :
         #input is 3d always!!!!
         super(NASGraph,self).__init__()
 #         Graph.__init__(self)
@@ -72,7 +72,7 @@ class NASGraph(torch.nn.Module,Graph) :
         self.begin = None
 #         self.alloperations = ['conv','deepen','skip']
 #         self.skipoperations = ['add','merge']
-        self.alloperations = ['conv','deepen','skip','maxpool','merge']
+        self.alloperations = ['conv','deepen','skip','maxpool']
         
         self.nns = None
         self.order = None
@@ -371,7 +371,7 @@ class NASGraph(torch.nn.Module,Graph) :
     
     def applyMorph(self,log=False) :
         #update output shapes for all nodes.
-        print 'OUTPUT OF NASGRAPH', self.nodes[self.order[-1]].output
+        # print 'OUTPUT OF NASGRAPH', self.nodes[self.order[-1]].output
 
 
 
@@ -685,7 +685,7 @@ class NASGraph(torch.nn.Module,Graph) :
     def compatCheck(self,c=0,log=False) :
         # modify compatCheck for merge operation
         # current implemetation only caters to add where all parents must have the same output shape
-        
+
         x = self.samplex
         if c == len(self.order) :
             return

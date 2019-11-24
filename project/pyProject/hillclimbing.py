@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from torchsummary import summary
 import torchviz
-import networkx as nx
+# import networkx as nx
 import matplotlib.pyplot as plt
 from graphviz import Digraph
 import math
@@ -61,7 +61,8 @@ def NASH(model_0,n_steps,n_neigh,n_nm,epoch_neigh,epoch_final,lr_start,lr_end):
 		for j in range(n_neigh-1) :
 			print 'J Neighs :',j
 			for k in range(n_nm):
-				model_best.nasgr.applyMorph()     	
+				model_best.nasgr.applyMorph()   
+				model_best = model_best.cuda()  	
 
 			model_best.nasgr.applyNecessaryAddNodes()
 			# model_best.modifyLinear() 

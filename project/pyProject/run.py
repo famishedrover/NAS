@@ -4,6 +4,8 @@
 from hillclimbing import NASH
 from NASGraph import NASGraph
 from trainmodel import Model 
+import torch
+# torch.set_default_tensor_type('torch.cuda.FloatTensor')
 # ------------------------------------------------------------------------------------
 
 
@@ -19,22 +21,22 @@ IMAGE_X = 32
 IMAGE_Y = 32
 
 
-# n_steps = 10
-# n_neigh = 4
-# n_nm = 3
-# epoch_neigh = 30
-# epoch_final = 50
-# lr_start = 0.01
-# lr_end = 0.001  # annealed via SGDR
-
-
-n_steps = 3
-n_neigh = 3
-n_nm = 5
-epoch_neigh = 1
-epoch_final = 1
+n_steps = 10
+n_neigh = 4
+n_nm = 3
+epoch_neigh = 30
+epoch_final = 50
 lr_start = 0.01
 lr_end = 0.001  # annealed via SGDR
+
+
+# n_steps = 3
+# n_neigh = 3
+# n_nm = 5
+# epoch_neigh = 1
+# epoch_final = 1
+# lr_start = 0.01
+# lr_end = 0.001  # annealed via SGDR
 
 # --------------------------------------------------------------
 # INIT GRAPH
@@ -61,6 +63,9 @@ gr.createModel()
 
 
 runModel = Model(gr)
+
+if torch.cuda.is_available() :
+	runModel = runModel.cuda()
 
 # pass this runModel to NASH
 

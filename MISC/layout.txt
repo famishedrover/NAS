@@ -1,0 +1,70 @@
+1.Abstract
+2.Introduction - whats NAS, why NAS, major advancements in NAS
+3.Related work - find 8-10 related works genre therefore, around 2 examples for 		each genre.
+4. Proposed Work -
+	4.1 NAS Graph 
+	4.2 Morphism
+	4.3 Operations 
+			Explain each operation and then how has it been implemented (like the way CNN nodes are selected etc.)
+	4.4 Gradient Stopping
+	4.5 Gradient Starvation (if complete)
+5. Experiments 
+	5.1 Dataset 
+	5.2 Baseline
+	5.3 Our Method (Result)
+	5.4 For other datasets (MNIST) (if complete)
+6. Conclusion & Future Work
+
+
+
+
+Contents pdf
+
+1. Introduction………..………..………..………..………….12
+	1.1 About
+	1.2 Problem Statement
+	1.3 NAS Example
+	1.4 Inspiration
+2. Background………..………..………..………..………….14
+3. Related Work………..………..………..………..……......15
+	3.1 NASNET
+	3.2 Efficient NAS
+	3.3 NAS Hill Climbing
+	3.4 Neural Architect
+	3.5 Differentiable Architecture Search
+4. Overview………..………..………..………..……………..17
+	4.1 Network Morphism
+	4.2 NASH Algorithm
+5. Proposed Work………..………..………..……………….20
+	5.1 NAS Graph
+	5.2 NAS Graph Operations
+		5.2.1 Skip
+		5.2.2 Deepen
+		5.2.3 Widen
+		5.2.4 Maxpool
+		5.2.5 Add
+		5.2.6 Merge
+	
+          5.3 Implementation Improvements
+		5.3.1 Padding
+		5.3.2 No Need for Seed Architecture
+		5.3.3 Addition of Maxpool
+		5.3.4 Linear Layer Morphism
+			5.3.4.1 Deepening the Linear Layer
+			5.3.4.2 Widening the Linear Layer
+	5.4 Theoretical Contribution
+		5.4.1 Learning Curve Prediction
+		5.4.2 Probabilistic Operation Selection
+		5.4.3 Gradient Stopping
+		5.4.4 Gradient Starvation
+6. Experiment………..………..………..………..………….....33
+	6.1 Baseline
+	6.2 Retraining from Scratch
+6.3 Comparison to Hand-Crafted and Other 
+       Automatically Generated Architectures
+6.4 MNIST Dataset
+7. Conclusion………..………..………..………..……………..37
+8. Future Work………..………..………..………..…………..38
+9. References………..………..………..………..……………..39
+10. Appendix………..………..………..………..………..……41
+	10.1 Final Neural Architecture 

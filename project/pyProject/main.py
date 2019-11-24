@@ -42,10 +42,12 @@ from NASGraph import NASGraph
 
 import random
 
+from pytorchmodelviz import viz
+
 # --------------------------------------------------------------
 # RANDOM SEED FOR random pkg, 
 # TODO Add for torch and numpy 
-random.seed('Na')
+random.seed('f')
 
 
 BATCH = 4
@@ -54,7 +56,7 @@ BEGIN_OUT_CHANNELS = 16
 BEGIN_KERNEL_SIZE = 3
 BEGIN_PADDING = False
 BEGIN_BLOCK = 'conv'
-operationdist = [0.3,0.2,0.2,0.15,0.15]
+operationdist = [0.5,0.2,0.2,0.1]
 # --------------------------------------------------------------
 # INIT GRAPH
 # (4, 3, 32, 32)
@@ -63,13 +65,13 @@ p = {'block':BEGIN_BLOCK,'in_channels':BEGIN_IN_CHANNELS,'out_channels':BEGIN_OU
 gr.addInGraph(**p)
 
 
-for _ in range(10):
+for _ in range(30):
     gr.applyMorph()
 x = torch.randn((BATCH,gr.nodes[gr.begin].c.in_channels,32,32))
 # --------------------------------------------------------------
 # MORPHISM
 
-ITERATIONS = 27
+ITERATIONS = 15
 for _ in range(ITERATIONS):
 	print _ , ' :',
 	status = gr.applyMorph(log=False)
@@ -79,7 +81,6 @@ for _ in range(ITERATIONS):
 gr.order = gr.topologicalSort()
 # gr.topologicalSort(name=True)
 # gr.createModel()
-
 
 # gr.compatCheck(log=True)
 
@@ -113,6 +114,7 @@ print '-'*20
 
 gr.createModel()
 
+
 # print 'NASGRAPH PARAMS'
 # for z,v in gr.named_parameters() :
 # 	print z
@@ -140,15 +142,20 @@ class Model(nn.Module) :
 
 net = Model(gr,t.shape)
 
-# --------------------------------------------------------------
-# LOOKING AT net params
-print 'FINAL NET PARAMS'
-for z,v in net.named_parameters() :
-	print z
+# summary(net,(3,3,32))
 
-# TO CUDA 
-if torch.cuda.is_available() :
-	net = net.cuda()
+# viz((4,3,3,32),net)
+
+
+# # --------------------------------------------------------------
+# # LOOKING AT net params
+# print 'FINAL NET PARAMS'
+# for z,v in net.named_parameters() :
+# 	print z
+
+# # TO CUDA 
+# if torch.cuda.is_available() :
+# 	net = net.cuda()
 
 
 
@@ -158,8 +165,8 @@ if torch.cuda.is_available() :
 # TRAINING FOR 2 EPOCHS 
 
 
-from trainmodel import Train ,Test
-Train(net,1)
-Test(net)
+# from trainmodel import Train ,Test
+# Train(net,1)
+# Test(net)
 
 

@@ -117,8 +117,8 @@ def Train(optim, net, epochs, lr_start, lr_end):
 
 	        viewerval = 100
 
-	        print 'Done [{}|{}]'.format(i,running_loss)
-	        break
+	        # print 'Done [{}|{}]'.format(i,running_loss)
+	        # break
 
 	        if i % viewerval == viewerval-1:    # print every 2000 mini-batches
 	            print('[%d, %5d] loss: %.3f' %(epoch + 1, i + 1, running_loss / viewerval))
@@ -143,6 +143,8 @@ def ValidationPerformance(model) :
 	with torch.no_grad():
 	    for data in testloader:
 	        images, labels = data
+	        if torch.cuda.is_available() :
+	        	images, labels = images.cuda() , labels.cuda()
 	        outputs = model(images)
 	        _, predicted = torch.max(outputs, 1)
 	        c = (predicted == labels).squeeze()
@@ -150,7 +152,8 @@ def ValidationPerformance(model) :
 	            label = labels[i]
 	            class_correct[label] += c[i].item()
 	            class_total[label] += 1
-	        break
+	        
+	        # break
 	
 	sum_val=0    
 	epsilon_Thresh = 0.0001       
@@ -183,36 +186,6 @@ class NASModule(nn.Module) :
         out = self.nns(x)
         return out
     
-    
-    # def modify_linear(self,no_of_neurons,layer=0):
-    #     # No. of neurons is the actual neurons to be kept 
-    #     # for img output (b,c,x,y) from conv 
-    #     # no_of_neurons = c*x*y
-
-    #     current_layer = self.layers[layer]
-    #     next_layer = self.layers[layer+1]
-   
-    #     I = current_layer.weight.shape[1]
-    #     H = current_layer.weight.shape[0]
-    #     O = next_layer.weight.shape[0]
-
-
-    #     weights = [current_layer.weight.data, next_layer.weight.data]
-
-    #     current_layer = torch.nn.Linear(I,no_of_neurons)
-    #     next_layer = torch.nn.Linear(no_of_neurons,O)
-
-    #     if no_of_neurons <= H :
-    #     	current_layer.weight.data[0:no_of_neurons,:] = weights[0]
-    #     	next_layer.weight.data[:,0:no_of_neurons] = weights[1]
-    #     else :
-    #     	current_layer.weight.data[0:H,:] = weights[0]
-    #     	next_layer.weight.data[:,0:H] = weights[1]
-
-    #     self.layers[layer] = current_layer
-    #     self.layers[layer+1] = next_layer
-        
-    #     self.nns = nn.Sequential(*self.layers)   
 
     def modify_linear(self,no_of_neurons,layer=0):
         # No. of neurons is the actual neurons to be kept 
@@ -225,8 +198,6 @@ class NASModule(nn.Module) :
         # I = current_layer.weight.shape[1]
         # H = current_layer.weight.shape[0]
         O = next_layer.weight.shape[0]
-
-        print next_layer.weight.shape
         H = next_layer.weight.shape[1]
 
 
@@ -271,9 +242,6 @@ class Model(nn.Module) :
     def __init__(self,nasgr) :
         super(Model,self).__init__()
         self.nasgr = nasgr
-
-        print type(nasgr)
-        print nasgr
 
         t = nasgr(torch.randn((BATCH,BEGIN_IN_CHANNELS,32,32))).shape
         out = t[1]*t[2]*t[3]
