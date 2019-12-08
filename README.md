@@ -18,18 +18,19 @@ Expected Contributions :
 - [x] Add padding as fn params of Nodes (Conv etc.)
 - [x] Concept : Add support for adding Maxpool Node.
 - [x] Modify compatCheck to get @forward fn.
-- [ ] Run Hill Climbing.
-- [ ] Testing of Merge Code 
+- [x] Run Hill Climbing.
+- [X] Testing of Merge Code 
 - [x] Write Merge 
-- [ ] Merge with Conv 
+- [x] Merge with Conv 
 - [x] Implement Swish, AriA , AriA2, LeakyReLU, ReLU6 , Swish_Beta
-- [ ] Add Swish & Beta, AriA , etc as parameters to NASGraph
+- [x] Add Swish & Beta, AriA , etc as parameters to NASGraph
 - [x] Add Final Layers
 - [x] Run Training Loop 
-- [ ] Dynamic Final Linear Layers to accomodate changing convs
+- [x] Dynamic Final Linear Layers to accomodate changing convs
 - [x] Linear Widen for Dynamic Linear Layers
 - [ ] Find Contribution Source eg. Ref Papers/Implementations
 
 
 Ref ---
-[1] https://arxiv.org/abs/1711.04528
+[1] https://ieeexplore.ieee.org/abstract/document/8791709
+[2] https://arxiv.org/abs/1711.04528
