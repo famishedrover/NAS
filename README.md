@@ -33,4 +33,6 @@ Expected Contributions :
 
 Ref ---
 [1] https://ieeexplore.ieee.org/abstract/document/8791709
-[2] https://arxiv.org/abs/1711.04528
+
+If using our code please cite our paper:
+Verma, Mudit, Pradyumna Sinha, Karan Goyal, Apoorva Verma, and Seba Susan. "A Novel Framework for Neural Architecture Search in the Hill Climbing Domain." In 2019 IEEE Second International Conference on Artificial Intelligence and Knowledge Engineering (AIKE), pp. 1-8. IEEE, 2019.
